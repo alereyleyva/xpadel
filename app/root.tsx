@@ -1,3 +1,4 @@
+import { NextUIProvider } from "@nextui-org/react";
 import {
   Links,
   Meta,
@@ -8,7 +9,7 @@ import {
 
 import "./tailwind.css";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export default function App() {
   return (
     <html lang="es">
       <head>
@@ -17,15 +18,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+      <body className="bg-background text-foreground dark">
+        <NextUIProvider>
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+        </NextUIProvider>
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
