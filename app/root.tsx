@@ -18,7 +18,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background text-foreground dark">
+      <body className="bg-background text-foreground">
         <NextUIProvider>
           <Outlet />
           <ScrollRestoration />
