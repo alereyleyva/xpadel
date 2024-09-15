@@ -5,11 +5,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useHref,
+  useNavigate,
 } from "@remix-run/react";
 
 import "./tailwind.css";
 
 export default function App() {
+  const navigate = useNavigate();
+
   return (
     <html lang="es">
       <head>
@@ -19,7 +23,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-background text-foreground">
-        <NextUIProvider>
+        <NextUIProvider navigate={navigate} useHref={useHref}>
           <Outlet />
           <ScrollRestoration />
           <Scripts />

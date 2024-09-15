@@ -4,8 +4,8 @@ import {
   isFailedFormValidationResult,
   parseZodValidationResult,
 } from "~/services/form-validation";
-import { UserRegistrationSchema } from "~/types/schema";
-import { User, UserRegistration, UserSession } from "~/types/models";
+import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
+import { User, UserLogin, UserRegistration, UserSession } from "~/types/models";
 import { createUser } from "~/services/user.server";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
@@ -51,5 +51,42 @@ export async function processUserRegistration(
 
   return {
     data: createdUser,
+  };
+}
+
+authenticator.use(
+  new FormStrategy(async ({ form }) => {
+    const userLogin = {
+      email: form.get("email") as string,
+      password: form.get("password") as string,
+    };
+
+    const loginResult = await processUserLogin(userLogin);
+
+    if (isFailedFormValidationResult(loginResult)) {
+      throw new FormValidationError(loginResult.errors);
+    }
+
+    const createdUser = loginResult.data;
+
+    return {
+      id: createdUser.id,
+      email: createdUser.email,
+    };
+  }),
+  "user-login"
+);
+
+export async function processUserLogin(
+  formData: UserLogin
+): Promise<FormValidationResult<User>> {
+  const zodValidationResult = await UserLoginSchema.safeParseAsync(formData);
+
+  const validationResult = parseZodValidationResult(zodValidationResult);
+
+  if (isFailedFormValidationResult(validationResult)) return validationResult;
+
+  return {
+    data: validationResult.data,
   };
 }

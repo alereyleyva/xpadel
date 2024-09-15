@@ -1,19 +1,53 @@
 import { z } from "zod";
-import { userExistsByEmail } from "~/services/user.server";
+import {
+  getUserByEmail,
+  userExistsByEmail,
+  verifyPassword,
+} from "~/services/user.server";
 
-export const UserLoginSchema = z.object({
+export const BaseUserSchema = z.object({
   email: z.string().trim().email("Correo electrónico inválido"),
   password: z.string().trim(),
 });
 
-export const UserSchema = UserLoginSchema.extend({
+export const UserLoginSchema = BaseUserSchema.extend({}).transform(
+  async (data, ctx) => {
+    const user = await getUserByEmail(data.email);
+
+    if (!user) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "No existe un usuario asociado al correo electrónico proporcionado",
+      });
+
+      return z.NEVER;
+    }
+
+    if (
+      !user.password ||
+      !(await verifyPassword(data.password, user.password))
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Correo electrónico o contraseña incorrectos",
+      });
+
+      return z.NEVER;
+    }
+
+    return user;
+  }
+);
+
+export const UserSchema = BaseUserSchema.extend({
   id: z.string().uuid("UUID inválido"),
   password: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
 
-export const UserRegistrationSchema = UserLoginSchema.extend({
+export const UserRegistrationSchema = BaseUserSchema.extend({
   password: z
     .string()
     .trim()
