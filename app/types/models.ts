@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { UserSchema, UserSignUpSchema } from "~/types/schema";
+import { UserSchema, UserRegistrationSchema } from "~/types/schema";
 
 export type User = z.infer<typeof UserSchema>;
-export type UserSignUp = z.infer<typeof UserSignUpSchema>;
+export type UserRegistration = z.infer<typeof UserRegistrationSchema>;
+
+export interface UserSession {
+  id: string;
+  email: string;
+}

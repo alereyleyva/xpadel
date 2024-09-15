@@ -1,6 +1,6 @@
 import { prisma } from "~/services/prisma.server";
 import bcrypt from "bcryptjs";
-import { User, UserSignUp } from "~/types/models";
+import { User, UserRegistration } from "~/types/models";
 
 export async function userExistsByEmail(email: string): Promise<boolean> {
   const userCount = await prisma.user.count({
@@ -14,7 +14,7 @@ async function hashPassword(plainPassword: string): Promise<string> {
   return bcrypt.hash(plainPassword, 10);
 }
 
-export async function createUser(userSignUp: UserSignUp): Promise<User> {
+export async function createUser(userSignUp: UserRegistration): Promise<User> {
   const hashedPassword = await hashPassword(userSignUp.password);
 
   const user = {

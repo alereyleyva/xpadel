@@ -1,7 +1,13 @@
-import { ActionFunctionArgs, json, MetaFunction } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  json,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { Button, Input, Tooltip } from "@nextui-org/react";
-import { processCredentialsSignUp } from "~/services/auth.server";
+import { authenticator } from "~/services/auth.server";
+import { processAuthorizationFormValidationErrors } from "~/services/form-validation";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,27 +17,31 @@ export const meta: MetaFunction = () => {
 };
 
 export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
+  try {
+    return await authenticator.authenticate("user-registration", request, {
+      successRedirect: "/profile",
+      throwOnError: true,
+    });
+  } catch (error) {
+    const processedErrors = processAuthorizationFormValidationErrors(error);
 
-  const userSignUp = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-    repeatedPassword: formData.get("repeatedPassword") as string,
-  };
+    if (processedErrors instanceof Response) return processedErrors;
+    else return json(processedErrors);
+  }
+}
 
-  const result = await processCredentialsSignUp(userSignUp);
-
-  if ("errors" in result) return json({ errors: result.errors });
-
-  return null;
+export async function loader({ request }: LoaderFunctionArgs) {
+  return await authenticator.isAuthenticated(request, {
+    successRedirect: "/profile",
+  });
 }
 
 export default function Index() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
 
-  const formErrors = actionData?.errors.formErrors ?? [];
-  const fieldErrors = actionData?.errors.fieldErrors ?? {};
+  const formErrors = actionData?.formErrors ?? [];
+  const fieldErrors = actionData?.fieldErrors ?? {};
 
   const isSubmitting = navigation.formAction === "/?index";
 
