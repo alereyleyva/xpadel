@@ -39,6 +39,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
 ###> recipes ###
+###> doctrine/doctrine-bundle ###
+RUN install-php-extensions pdo_pgsql
+###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
 COPY --link docker/php/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
@@ -76,12 +79,12 @@ COPY --link docker/php/conf.d/20-app.prod.ini $PHP_INI_DIR/app.conf.d/
 COPY --link docker/caddy/worker.Caddyfile /etc/caddy/worker.Caddyfile
 
 # prevent the reinstallation of vendors at every changes in the source code
-COPY --link composer.* symfony.* ./
+COPY --link backend/composer.* backend/symfony.* ./
 RUN set -eux; \
 	composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress
 
 # copy sources
-COPY --link . ./
+COPY --link ./backend ./
 RUN rm -Rf frankenphp/
 
 RUN set -eux; \
