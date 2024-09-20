@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { authenticator } from "~/services/auth.server";
 import { Form, useLoaderData } from "@remix-run/react";
-import { UserSession } from "~/types/models";
+import { UserSession } from "~/types/definitions";
 import { Button } from "@nextui-org/react";
 
 export async function loader({ request }: LoaderFunctionArgs) {

@@ -1,15 +1,18 @@
 import {
   FormValidationError,
-  FormValidationResult,
   isFailedFormValidationResult,
   parseZodValidationResult,
 } from "~/services/form-validation";
-import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
-import { User, UserLogin, UserRegistration, UserSession } from "~/types/models";
-import { createUser } from "~/services/user.server";
+import {
+  AuthenticationResponse,
+  isFailedAuthentication,
+  UserSession,
+} from "~/types/definitions";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { sessionStorage } from "~/services/session.server";
+import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
+import { postData } from "~/services/http-client";
 
 export const authenticator = new Authenticator<UserSession>(sessionStorage);
 
@@ -21,38 +24,37 @@ authenticator.use(
       repeatedPassword: form.get("repeatedPassword") as string,
     };
 
-    const registrationResult = await processUserRegistration(userRegistration);
+    const zodValidationResult =
+      UserRegistrationSchema.safeParse(userRegistration);
+
+    const registrationResult = parseZodValidationResult(zodValidationResult);
 
     if (isFailedFormValidationResult(registrationResult)) {
       throw new FormValidationError(registrationResult.errors);
     }
 
-    const createdUser = registrationResult.data;
+    const response = await postData<AuthenticationResponse>(
+      "/register",
+      userRegistration
+    );
+
+    if (isFailedAuthentication(response)) {
+      const { error } = response;
+
+      throw new FormValidationError({
+        formErrors: [error],
+      });
+    }
+
+    const { accessToken } = response;
 
     return {
-      id: createdUser.id,
-      email: createdUser.email,
+      email: userRegistration.email,
+      accessToken: accessToken,
     };
   }),
   "user-registration"
 );
-
-export async function processUserRegistration(
-  formData: UserRegistration
-): Promise<FormValidationResult<User>> {
-  const zodValidationResult =
-    await UserRegistrationSchema.safeParseAsync(formData);
-
-  const validationResult = parseZodValidationResult(zodValidationResult);
-
-  if (isFailedFormValidationResult(validationResult)) return validationResult;
-
-  const createdUser = await createUser(formData);
-
-  return {
-    data: createdUser,
-  };
-}
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {
@@ -61,32 +63,33 @@ authenticator.use(
       password: form.get("password") as string,
     };
 
-    const loginResult = await processUserLogin(userLogin);
+    const zodValidationResult = UserLoginSchema.safeParse(userLogin);
+
+    const loginResult = parseZodValidationResult(zodValidationResult);
 
     if (isFailedFormValidationResult(loginResult)) {
       throw new FormValidationError(loginResult.errors);
     }
 
-    const createdUser = loginResult.data;
+    const response = await postData<AuthenticationResponse>(
+      "/login",
+      userLogin
+    );
+
+    if (isFailedAuthentication(response)) {
+      const { error } = response;
+
+      throw new FormValidationError({
+        formErrors: [error],
+      });
+    }
+
+    const { accessToken } = response;
 
     return {
-      id: createdUser.id,
-      email: createdUser.email,
+      email: userLogin.email,
+      accessToken,
     };
   }),
   "user-login"
 );
-
-export async function processUserLogin(
-  formData: UserLogin
-): Promise<FormValidationResult<User>> {
-  const zodValidationResult = await UserLoginSchema.safeParseAsync(formData);
-
-  const validationResult = parseZodValidationResult(zodValidationResult);
-
-  if (isFailedFormValidationResult(validationResult)) return validationResult;
-
-  return {
-    data: validationResult.data,
-  };
-}

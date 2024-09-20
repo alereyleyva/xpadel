@@ -14,12 +14,12 @@ class LoginController extends AbstractController
 {
     public function __construct(private JWTTokenManagerInterface $tokenManager) {}
 
-    #[Route('/api/login', name: 'app_login')]
+    #[Route('/api/login', name: 'app_login', methods: ['POST'])]
     public function index(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
             return $this->json([
-                'message' => 'missing credentials',
+                'error' => 'Credenciales incorrectas',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
