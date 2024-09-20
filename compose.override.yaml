@@ -10,7 +10,6 @@ services:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./docker/php/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
     environment:
-      SERVER_NAME: http://localhost:8000, php:80
       PHP_IDE_CONFIG: "serverName=xpadel"
       XDEBUG_SESSION: 1
       XDEBUG_MODE: "${XDEBUG_MODE:-debug}"
