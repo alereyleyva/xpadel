@@ -6,15 +6,19 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\Authentica
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException as SecurityAuthenticationException;
 
 class CredentialsAuthenticationFailureHandler extends AuthenticationFailureHandler
 {
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): \Symfony\Component\HttpFoundation\Response
+    public function onAuthenticationFailure(Request $request, SecurityAuthenticationException $exception): Response
     {
-        parent::onAuthenticationFailure($request, $exception);
+        $credentialsException = new \RuntimeException(
+            'Credenciales incorrectas',
+            Response::HTTP_UNAUTHORIZED
+        );
 
-        return new JsonResponse(['error' => 'Credenciales incorrectas'], Response::HTTP_UNAUTHORIZED);
+        return new JsonResponse([
+            'error' => $credentialsException->getMessage(),
+        ], $credentialsException->getCode());
     }
-
 }

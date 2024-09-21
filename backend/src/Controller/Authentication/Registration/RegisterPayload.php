@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Registration;
+namespace App\Controller\Authentication\Registration;
 
 readonly final class RegisterPayload
 {
