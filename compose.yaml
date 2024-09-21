@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ["CMD", "pg_isready", "-d", "xpadel", "-U", "postgres"]
       timeout: 5s
       retries: 5
       start_period: 60s
