@@ -1,4 +1,4 @@
-name: XPadel API Deplyo
+name: XPadel API Deploy
 on:
   workflow_dispatch:
   push:
