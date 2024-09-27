@@ -22,5 +22,20 @@ services:
     tty: true
 
   database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: xpadel
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "xpadel", "-U", "postgres" ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
     ports:
       - "5432:5432"
+
+volumes:
+  database_data:

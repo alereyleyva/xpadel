@@ -3,6 +3,7 @@ services:
     restart: unless-stopped
     environment:
       SERVER_NAME: ${SERVER_NAME:-http://localhost}, php:80
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@database:5432/xpadel?serverVersion=16&charset=utf8}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -12,21 +13,6 @@ services:
       # HTTPS
       - "443:443"
 
-  database:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: xpadel
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "xpadel", "-U", "postgres"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    volumes:
-      - database_data:/var/lib/postgresql/data:rw
-
 volumes:
   caddy_data:
   caddy_config:
-  database_data:
