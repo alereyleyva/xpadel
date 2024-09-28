@@ -19,6 +19,8 @@ jobs:
           key: ${{secrets.DIGITAL_OCEAN_DROPLET_KEY}}
           script: >
             cd xpadel &&
+            git fetch &&
+            git reset --hard origin/main &&
             DATABASE_URL="${{secrets.DATABASE_URL}}" 
             APP_SECRET=${{secrets.APP_SECRET}} 
             SERVER_NAME=${{secrets.SERVER_NAME}}
