@@ -14,9 +14,9 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.DIGITAL_OCEAN_DROPLET_IP}}
-          username: ${{secrets.DIGITAL_OCEAN_DROPLET_USERNAME}}
-          key: ${{secrets.DIGITAL_OCEAN_DROPLET_KEY}}
+          host: ${{secrets.SERVER_IP}}
+          username: ${{secrets.SERVER_USERNAME}}
+          key: ${{secrets.SERVER_KEY}}
           script: >
             cd xpadel &&
             git fetch &&
