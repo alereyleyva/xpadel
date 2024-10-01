@@ -3,6 +3,7 @@ DOCKER_COMP = docker compose
 
 # Docker containers
 PHP_CONT = $(DOCKER_COMP) exec --user www-data php
+NODE_CONT = $(DOCKER_COMP) exec --user node node
 
 # Executables
 PHP      = $(PHP_CONT) php
@@ -32,18 +33,14 @@ down: ## Stop the docker hub
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
 
-sh: ## Connect to the FrankenPHP container
-	@$(PHP_CONT) sh
-
-bash: ## Connect to the FrankenPHP container via bash so up and down arrows go to previous commands
+## —— PHP ————————————————————————————————————————————————————————————————
+bash-php: ## Connect to the FrankenPHP container via bash
 	@$(PHP_CONT) bash
 
-test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
+test-php: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
 
-
-## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
 	@$(eval c ?=)
 	@$(COMPOSER) $(c)
@@ -52,10 +49,9 @@ vendor: ## Install vendors according to the current composer.lock file
 vendor: c=install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
 vendor: composer
 
-## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
-sf: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
-	@$(eval c ?=)
-	@$(SYMFONY) $(c)
+## —— Node ————————————————————————————————————————————————————————————————
+bash-node: ## Connect to the Node container via bash
+	@$(NODE_CONT) bash
 
-cc: c=c:c ## Clear the cache
-cc: sf
+restart-node: ## Restart Node container (Normally for restarting Remix dev server)
+	@$(DOCKER_COMP) restart node

@@ -9,21 +9,26 @@
 {$CADDY_EXTRA_CONFIG}
 
 {$SERVER_NAME:localhost} {
-	log {
-		format filter {
-			request>uri query {
-				replace authorization REDACTED
-			}
-		}
+    log {
+        format filter {
+            request>uri query {
+                replace authorization REDACTED
+            }
+        }
+    }
+
+    encode zstd br gzip
+
+	handle /api* {
+        root * /var/www/app/public
+
+        # Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
+        header ?Permissions-Policy "browsing-topics=()"
+
+        php_server
 	}
 
-	root * /var/www/app/public
-	encode zstd br gzip
-
-	{$CADDY_SERVER_EXTRA_DIRECTIVES}
-
-	# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
-	header ?Permissions-Policy "browsing-topics=()"
-
-	php_server
+	handle {
+		reverse_proxy node:3000
+	}
 }

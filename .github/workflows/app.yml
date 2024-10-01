@@ -1,4 +1,4 @@
-name: XPadel API Deploy
+name: XPadel Deploy
 on:
   workflow_dispatch:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - backend/**
+      - frontend/**
 
 jobs:
   deploy:
@@ -23,6 +24,8 @@ jobs:
             git reset --hard origin/main &&
             DATABASE_URL="${{secrets.DATABASE_URL}}" 
             APP_SECRET=${{secrets.APP_SECRET}} 
-            SERVER_NAME=${{secrets.SERVER_NAME}}
+            AUTH_SECRET=${{secrets.AUTH_SECRET}}
+            SERVER_NAME=xpadel.app
+            API_URL=https://xpadel.app/api
             docker compose -f compose.yaml -f compose.prod.yaml up -d
              

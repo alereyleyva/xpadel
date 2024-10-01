@@ -14,12 +14,21 @@ services:
       XDEBUG_SESSION: 1
       XDEBUG_MODE: "${XDEBUG_MODE:-debug}"
     ports:
-      # HTTP
-      - "8000:8000"
+      # Node
+      - "3000:3000"
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+
+  node:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+      target: dev
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
 
   database:
     image: postgres:16-alpine

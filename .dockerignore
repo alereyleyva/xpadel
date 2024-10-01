@@ -23,6 +23,7 @@
 **/Thumbs.db
 **/docs/
 .github/
+
 backend/public/bundles/
 backend/tests/
 backend/var/
@@ -32,3 +33,6 @@ backend/.env.*.local
 backend/.env.local
 backend/.env.local.php
 backend/.env.test
+
+frontend/.eslintrc.cjs
+frontend/.prettierrc.json
