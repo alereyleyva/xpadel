@@ -27,5 +27,5 @@ jobs:
             AUTH_SECRET=${{secrets.AUTH_SECRET}}
             SERVER_NAME=xpadel.app
             API_URL=https://xpadel.app/api
-            docker compose -f compose.yaml -f compose.prod.yaml up -d
+            docker compose -f compose.yaml -f compose.prod.yaml up -d --build
              
