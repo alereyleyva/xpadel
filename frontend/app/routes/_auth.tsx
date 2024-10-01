@@ -3,6 +3,7 @@ import { Form, Outlet, useLocation } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
 import { processAuthorizationFormValidationErrors } from "~/services/form-validation";
 import { Link } from "@nextui-org/link";
+import icon from "~/images/xpadel.png";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {
@@ -34,7 +35,7 @@ export default function AuthPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center space-y-5">
-      <h1 className="text-2xl sm:text-4xl">Bienvenido/a a XPadel 🎾</h1>
+      <img src={icon} alt="xpadel-icon" className="w-24" />
       {pathname.startsWith("/login") ? (
         <p>
           ¿No tienes una cuenta? <Link href="/register">Registrate</Link>
