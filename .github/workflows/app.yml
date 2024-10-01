@@ -22,10 +22,13 @@ jobs:
             cd xpadel &&
             git fetch &&
             git reset --hard origin/main &&
+            
             DATABASE_URL="${{secrets.DATABASE_URL}}" 
             APP_SECRET=${{secrets.APP_SECRET}} 
             AUTH_SECRET=${{secrets.AUTH_SECRET}}
             SERVER_NAME=xpadel.app
             API_URL=https://xpadel.app/api
             docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+            
+            docker compose exec php frankenphp stop
              
