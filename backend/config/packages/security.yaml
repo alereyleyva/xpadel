@@ -13,18 +13,34 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-            
-        main:
+        
+        login:
+            pattern: ^/api/login
+            stateless: true
             json_login:
                 username_path: email
                 check_path: app_login
                 failure_handler: App\Service\Authentication\CredentialsAuthenticationFailureHandler
-
+        
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
-
+        
+        main:
+            pattern: ^/admin
+            lazy: true
+            provider: app_user_provider
+            access_denied_url: admin_login
+            
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                enable_csrf: true
+            
+            logout:
+                path: admin_logout
+                target: admin_login
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -33,6 +49,9 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

@@ -19,7 +19,9 @@
 
     encode zstd br gzip
 
-	handle /api* {
+    @api `path_regexp('^/(api|admin|bundles)/*')`
+
+	handle @api {
         root * /var/www/app/public
 
         # Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
