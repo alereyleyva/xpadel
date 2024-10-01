@@ -2,7 +2,7 @@ services:
   php:
     restart: unless-stopped
     environment:
-      SERVER_NAME: ${SERVER_NAME:-http://localhost}, php:80
+      SERVER_NAME: ${SERVER_NAME:-:80}, php:80
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@database:5432/xpadel?serverVersion=16&charset=utf8}
     volumes:
       - caddy_data:/data
