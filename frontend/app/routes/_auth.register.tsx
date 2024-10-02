@@ -71,7 +71,7 @@ export default function RegisterPage() {
           isLoading={isSubmitting}
           isDisabled={!termsAndConditions}
         >
-          Iniciar sesión
+          Registrarme
         </Button>
       </Tooltip>
     </>
