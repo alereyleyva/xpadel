@@ -30,16 +30,9 @@ start: build up ## Build and start the containers
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
 
-logs: ## Show live logs
-	@$(DOCKER_COMP) logs --tail=0 --follow
-
 ## —— PHP ————————————————————————————————————————————————————————————————
 bash-php: ## Connect to the FrankenPHP container via bash
 	@$(PHP_CONT) bash
-
-test-php: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
-	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e APP_ENV=test php bin/phpunit $(c)
 
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
 	@$(eval c ?=)
@@ -53,5 +46,5 @@ vendor: composer
 bash-node: ## Connect to the Node container via bash
 	@$(NODE_CONT) bash
 
-restart-node: ## Restart Node container (Normally for restarting Remix dev server)
-	@$(DOCKER_COMP) restart node
+logs-node:
+	@$(DOCKER_COMP) logs --tail=0 --follow node

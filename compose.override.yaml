@@ -13,9 +13,6 @@ services:
       PHP_IDE_CONFIG: "serverName=xpadel"
       XDEBUG_SESSION: 1
       XDEBUG_MODE: "${XDEBUG_MODE:-debug}"
-    ports:
-      # Node
-      - "3000:3000"
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
@@ -27,8 +24,7 @@ services:
       dockerfile: docker/node/Dockerfile
       target: dev
     volumes:
-      - ./frontend:/app
-      - ./frontend/node_modules:/app/node_modules
+      - ./frontend:/home/node/app
 
   database:
     image: postgres:16-alpine

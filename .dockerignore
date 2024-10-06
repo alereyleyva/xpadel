@@ -36,3 +36,4 @@ backend/.env.test
 
 frontend/.eslintrc.cjs
 frontend/.prettierrc.json
+frontend/node_modules
