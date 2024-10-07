@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -39,6 +40,7 @@ class UserCrudController extends AbstractCrudController
                 ->onlyWhenCreating(),
             ArrayField::new('roles')->setSortable(false),
             DateTimeField::new('createdAt')->onlyOnIndex(),
+            AssociationField::new('profile')->onlyOnForms()->renderAsEmbeddedForm(),
         ];
     }
 
