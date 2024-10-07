@@ -6,6 +6,7 @@ use App\Repository\UserProfileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserProfileRepository::class)]
@@ -14,6 +15,7 @@ class UserProfile
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, options: ["default" => "gen_random_uuid()"])]
+    #[Ignore]
     private Uuid $id;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -30,6 +32,7 @@ class UserProfile
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -77,7 +80,13 @@ class UserProfile
 
     public function getFullName(): ?string
     {
-        return sprintf('%s %s', $this->firstName, $this->lastName);
+        if (null === $this->firstName && null === $this->lastName) {
+            return null;
+        }
+
+        $fullName = sprintf('%s %s', $this->firstName, $this->lastName);
+
+        return trim($fullName);
     }
 
     public function getPhoneNumber(): ?string
