@@ -7,7 +7,7 @@ import {
   AuthenticationResponse,
   isFailedAuthentication,
   UserSession,
-} from "~/types/definitions";
+} from "~/types/definition";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { sessionStorage } from "~/services/session.server";

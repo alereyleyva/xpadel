@@ -18,7 +18,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import { UserSession } from "~/types/definitions";
+import { UserSession } from "~/types/definition";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {
