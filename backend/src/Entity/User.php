@@ -12,15 +12,14 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`', schema: 'xpadel')]
-#[ORM\UniqueConstraint(name: 'user_email_idx', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, options: ['default' => 'gen_random_uuid()'])]
     private Uuid $id;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    #[ORM\Column(type: Types::TEXT, unique: true)]
+    private string $email;
 
     #[ORM\Column]
     private array $roles = [];
@@ -31,11 +30,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     public \DateTimeImmutable $createdAt;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private UserProfile $profile;
+
     public function __construct(string $email)
     {
         $this->id = Uuid::v4();
         $this->email = $email;
         $this->createdAt = new \DateTimeImmutable();
+
+        $profile = new UserProfile();
+
+        $this->setProfile($profile);
     }
 
     public function getId(): string
@@ -43,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -90,5 +96,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getProfile(): UserProfile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(UserProfile $profile): void
+    {
+        if ($profile->getUser() !== $this) {
+            $profile->setUser($this);
+        }
+
+        $this->profile = $profile;
     }
 }
