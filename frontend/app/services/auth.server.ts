@@ -12,7 +12,7 @@ import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { sessionStorage } from "~/services/session.server";
 import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
-import { postData } from "~/services/http-client";
+import { makeRequest } from "~/services/http-client";
 
 export const authenticator = new Authenticator<UserSession>(sessionStorage);
 
@@ -33,10 +33,10 @@ authenticator.use(
       throw new FormValidationError(registrationResult.errors);
     }
 
-    const response = await postData<AuthenticationResponse>(
-      "/register",
-      userRegistration
-    );
+    const response = await makeRequest<AuthenticationResponse>("/register", {
+      body: userRegistration,
+      method: "POST",
+    });
 
     if (isFailedAuthentication(response)) {
       const { error } = response;
@@ -71,10 +71,10 @@ authenticator.use(
       throw new FormValidationError(loginResult.errors);
     }
 
-    const response = await postData<AuthenticationResponse>(
-      "/login",
-      userLogin
-    );
+    const response = await makeRequest<AuthenticationResponse>("/login", {
+      body: userLogin,
+      method: "POST",
+    });
 
     if (isFailedAuthentication(response)) {
       const { error } = response;

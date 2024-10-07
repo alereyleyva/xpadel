@@ -7,7 +7,7 @@ import icon from "~/images/xpadel.png";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {
-    successRedirect: "/profile",
+    successRedirect: "/user-profile",
   });
 }
 
@@ -17,7 +17,7 @@ export async function action(
 ) {
   try {
     return await authenticator.authenticate(strategy, request, {
-      successRedirect: "/profile",
+      successRedirect: "/user-profile",
       throwOnError: true,
     });
   } catch (error) {

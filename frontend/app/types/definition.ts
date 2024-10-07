@@ -3,6 +3,18 @@ export interface UserSession {
   accessToken: string;
 }
 
+export interface User {
+  profile: UserProfile;
+}
+
+export interface UserProfile {
+  firstName: string | null;
+  lastName: string | null;
+  fullName: string | null;
+  phoneNumber: string | null;
+  instagramAccount: string | null;
+}
+
 interface SucceededAuthenticationResponse {
   accessToken: string;
 }

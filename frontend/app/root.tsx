@@ -9,6 +9,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 
+import "react-toastify/dist/ReactToastify.css";
 import "./tailwind.css";
 
 export default function App() {
