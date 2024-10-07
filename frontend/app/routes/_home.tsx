@@ -11,6 +11,7 @@ import {
   Dropdown,
   DropdownMenu,
   Avatar,
+  DropdownSection,
 } from "@nextui-org/react";
 import {
   Outlet,
@@ -26,6 +27,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
+const menuItemsOptions = [
+  {
+    content: "Mi cuenta",
+    href: "/user-profile",
+  },
+];
+
 export default function Home() {
   const { email } = useLoaderData<UserSession>();
   const navigate = useNavigate();
@@ -34,6 +42,12 @@ export default function Home() {
   function handleLogout() {
     submit(null, { action: "/logout", method: "post" });
   }
+
+  const menuItems = menuItemsOptions.map(({ content, href }) => (
+    <DropdownItem key={href} textValue={href} onClick={() => navigate(href)}>
+      {content}
+    </DropdownItem>
+  ));
 
   return (
     <div className="min-h-screen">
@@ -56,16 +70,12 @@ export default function Home() {
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-8" textValue="profile">
+              <DropdownItem key="email" textValue="email" className="h-8">
                 <p className="font-semibold">{email}</p>
               </DropdownItem>
-              <DropdownItem
-                key="settings"
-                textValue="settings"
-                onClick={() => navigate("/profile")}
-              >
-                Mi perfil de jugador
-              </DropdownItem>
+
+              <DropdownSection>{menuItems}</DropdownSection>
+
               <DropdownItem
                 key="logout"
                 color="danger"
