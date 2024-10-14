@@ -6,28 +6,28 @@
 	}
 }
 
-{$CADDY_EXTRA_CONFIG}
+{$CADDY_EXTRA_CONFIG} 
 
 {$SERVER_NAME:localhost} {
-    log {
-        format filter {
-            request>uri query {
-                replace authorization REDACTED
-            }
-        }
-    }
+	log {
+		format filter {
+			request>uri query {
+				replace authorization REDACTED
+			}
+		}
+	}
 
-    encode zstd br gzip
+	encode zstd br gzip
 
-    @api `path_regexp('^/(api|admin|bundles)/*')`
+	@api `path_regexp('^/(api|admin|bundles)/*')`
 
 	handle @api {
-        root * /var/www/app/public
+		root * /var/www/app/public
 
-        # Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
-        header ?Permissions-Policy "browsing-topics=()"
+		# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
+		header ?Permissions-Policy "browsing-topics=()"
 
-        php_server
+		php_server
 	}
 
 	handle {
