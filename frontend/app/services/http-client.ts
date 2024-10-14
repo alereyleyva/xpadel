@@ -1,5 +1,3 @@
-import { AuthorizationError } from "remix-auth";
-
 interface HttpClientOptions {
   accessToken?: string;
   body?: object;
@@ -25,8 +23,6 @@ export async function makeRequest<ResponseType>(
   }
 
   const response = await fetch(`${process.env.API_URL}${path}`, requestOptions);
-
-  if (response.status === 401) throw new AuthorizationError();
 
   return await response.json();
 }
