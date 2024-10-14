@@ -1,18 +1,18 @@
+import { Authenticator } from "remix-auth";
+import { FormStrategy } from "remix-auth-form";
 import {
   FormValidationError,
   isFailedFormValidationResult,
   parseZodValidationResult,
 } from "~/services/form-validation";
-import {
-  AuthenticationResponse,
-  isFailedAuthentication,
-  UserSession,
-} from "~/types/definition";
-import { Authenticator } from "remix-auth";
-import { FormStrategy } from "remix-auth-form";
-import { sessionStorage } from "~/services/session.server";
-import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
 import { makeRequest } from "~/services/http-client";
+import { sessionStorage } from "~/services/session.server";
+import {
+  type AuthenticationResponse,
+  type UserSession,
+  isFailedAuthentication,
+} from "~/types/definition";
+import { UserLoginSchema, UserRegistrationSchema } from "~/types/schema";
 
 export const authenticator = new Authenticator<UserSession>(sessionStorage);
 
@@ -53,7 +53,7 @@ authenticator.use(
       accessToken: accessToken,
     };
   }),
-  "user-registration"
+  "user-registration",
 );
 
 authenticator.use(
@@ -91,5 +91,5 @@ authenticator.use(
       accessToken,
     };
   }),
-  "user-login"
+  "user-login",
 );

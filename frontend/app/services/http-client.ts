@@ -6,7 +6,7 @@ interface HttpClientOptions {
 
 export async function makeRequest<ResponseType>(
   path: string,
-  options: HttpClientOptions = { method: "GET" }
+  options: HttpClientOptions = { method: "GET" },
 ): Promise<ResponseType> {
   const headers = getHeaders(options);
 

@@ -1,5 +1,5 @@
-import { SafeParseReturnType } from "zod";
 import { AuthorizationError } from "remix-auth";
+import type { SafeParseReturnType } from "zod";
 
 export type FormValidationResult<Data> =
   | SucceededFormValidationResult<Data>
@@ -19,13 +19,13 @@ export interface FormValidationErrors {
 }
 
 export function isFailedFormValidationResult<Data>(
-  validationResult: FormValidationResult<Data>
+  validationResult: FormValidationResult<Data>,
 ): validationResult is FailedFormValidationResult {
   return "errors" in validationResult;
 }
 
 export function parseZodValidationResult<Input, Output>(
-  validationResult: SafeParseReturnType<Input, Output>
+  validationResult: SafeParseReturnType<Input, Output>,
 ): FormValidationResult<Output> {
   if (validationResult.success) return { data: validationResult.data };
 
@@ -41,7 +41,7 @@ export function parseZodValidationResult<Input, Output>(
 }
 
 export function processAuthorizationFormValidationErrors(
-  error: unknown
+  error: unknown,
 ): FormValidationErrors | Response {
   if (error instanceof Response) return error;
 

@@ -1,25 +1,25 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { authenticator } from "~/services/auth.server";
-import icon from "~/images/xpadel.png";
 import {
+  Avatar,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
+  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
-  Link,
-  DropdownItem,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  Avatar,
-  DropdownSection,
 } from "@nextui-org/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
   Outlet,
   useLoaderData,
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import { UserSession } from "~/types/definition";
+import icon from "~/images/xpadel.png";
+import { authenticator } from "~/services/auth.server";
+import type { UserSession } from "~/types/definition";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {

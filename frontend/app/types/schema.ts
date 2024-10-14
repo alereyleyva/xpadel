@@ -1,5 +1,5 @@
-import { RefinementCtx, z } from "zod";
 import { isValidPhoneNumber, parsePhoneNumber } from "libphonenumber-js";
+import { type RefinementCtx, z } from "zod";
 
 export const UserLoginSchema = z.object({
   email: z.string().trim().email("Correo electrónico inválido"),
@@ -48,7 +48,7 @@ export const UserProfileSchema = z.object({
 
           return phoneNumber.formatInternational();
         })
-        .nullish()
+        .nullish(),
     ),
   instagramAccount: z
     .string()

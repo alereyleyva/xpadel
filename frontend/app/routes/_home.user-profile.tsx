@@ -1,26 +1,30 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
-import { authenticator } from "~/services/auth.server";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
 import {
   CameraIcon,
   PhoneIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Avatar, Button, Input, Tooltip } from "@nextui-org/react";
-import { ChangeEventHandler, useEffect, useRef, useState } from "react";
-import { UserProfileSchema } from "~/types/schema";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  json,
+} from "@remix-run/node";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
+import { type ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { authenticator } from "~/services/auth.server";
 import {
   isFailedFormValidationResult,
   parseZodValidationResult,
 } from "~/services/form-validation";
-import { User, UserProfile } from "~/types/definition";
 import { makeRequest } from "~/services/http-client";
-import { ToastContainer, toast } from "react-toastify";
+import type { User, UserProfile } from "~/types/definition";
+import { UserProfileSchema } from "~/types/schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { accessToken } = await authenticator.isAuthenticated(request, {

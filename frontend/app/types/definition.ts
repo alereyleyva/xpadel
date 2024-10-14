@@ -28,7 +28,7 @@ export type AuthenticationResponse =
   | FailedAuthenticationResponse;
 
 export function isFailedAuthentication(
-  response: AuthenticationResponse
+  response: AuthenticationResponse,
 ): response is FailedAuthenticationResponse {
   return "error" in response;
 }

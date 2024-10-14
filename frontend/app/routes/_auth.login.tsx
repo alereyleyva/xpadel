@@ -1,8 +1,8 @@
-import { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Button, Input, Tooltip } from "@nextui-org/react";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useActionData, useNavigation } from "@remix-run/react";
 import { action as authAction } from "~/routes/_auth";
-import { FormValidationErrors } from "~/services/form-validation";
+import type { FormValidationErrors } from "~/services/form-validation";
 
 export const meta: MetaFunction = () => {
   return [

@@ -1,9 +1,13 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
+import { Link } from "@nextui-org/link";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  json,
+} from "@remix-run/node";
 import { Form, Outlet, useLocation } from "@remix-run/react";
+import icon from "~/images/xpadel.png";
 import { authenticator } from "~/services/auth.server";
 import { processAuthorizationFormValidationErrors } from "~/services/form-validation";
-import { Link } from "@nextui-org/link";
-import icon from "~/images/xpadel.png";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {
@@ -13,7 +17,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action(
   strategy: string,
-  { request }: ActionFunctionArgs
+  { request }: ActionFunctionArgs,
 ) {
   try {
     return await authenticator.authenticate(strategy, request, {
@@ -24,7 +28,8 @@ export async function action(
     const processedErrors = processAuthorizationFormValidationErrors(error);
 
     if (processedErrors instanceof Response) return processedErrors;
-    else return json(processedErrors);
+
+    return json(processedErrors);
   }
 }
 
