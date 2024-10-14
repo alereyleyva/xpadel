@@ -46,5 +46,5 @@ vendor: composer
 bash-node: ## Connect to the Node container via bash
 	@$(NODE_CONT) bash
 
-logs-node:
+logs-node: ## Show and follow Node container logs
 	@$(DOCKER_COMP) logs --tail=0 --follow node
