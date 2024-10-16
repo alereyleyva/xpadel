@@ -2,7 +2,7 @@
 DOCKER_COMP = docker compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec --user www-data php
+PHP_CONT = $(DOCKER_COMP) exec php
 NODE_CONT = $(DOCKER_COMP) exec --user node node
 
 # Executables
@@ -41,6 +41,9 @@ composer: ## Run composer, pass the parameter "c=" to run a given command, examp
 vendor: ## Install vendors according to the current composer.lock file
 vendor: c=install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
 vendor: composer
+
+permissions: ## Fix permissions issues between host and container user
+	@$(DOCKER_COMP) run --rm php chown -R $(id -u):$(id -g) .
 
 ## —— Node ————————————————————————————————————————————————————————————————
 bash-node: ## Connect to the Node container via bash

@@ -11,9 +11,9 @@ FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
 # Base FrankenPHP image
 FROM frankenphp_upstream AS frankenphp_base
 
-WORKDIR /var/www/app
+WORKDIR /app
 
-VOLUME /var/www/app/var
+VOLUME /app/var
 
 # persistent / runtime deps
 # hadolint ignore=DL3008
@@ -64,10 +64,6 @@ RUN set -eux; \
 
 COPY --link docker/php/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/
 
-RUN usermod -u 1000 www-data && \
-    groupmod -g 1000 www-data && \
-    chown www-data:www-data /var/www
-
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
 
 # Prod FrankenPHP image
@@ -88,7 +84,6 @@ RUN set -eux; \
 
 # copy sources
 COPY --link ./backend ./
-RUN rm -Rf frankenphp/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
