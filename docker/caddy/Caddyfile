@@ -19,7 +19,7 @@
 
 	encode zstd br gzip
 
-	@api `path_regexp('^/(api|admin|bundles)/*')`
+	@api `path_regexp('^/(api|admin|bundles|avatars)/*')`
 
 	handle @api {
 		root * /app/public
