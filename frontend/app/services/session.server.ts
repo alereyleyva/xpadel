@@ -1,4 +1,7 @@
 import { createCookieSessionStorage } from "@remix-run/node";
+import { authenticator } from "~/services/auth.server";
+import { makeRequest } from "~/services/http-client";
+import type { User } from "~/types/definition";
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -12,3 +15,18 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 export const { getSession, commitSession, destroySession } = sessionStorage;
+
+export const getSessionUser = async (request: Request) => {
+  const { accessToken } = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
+  try {
+    return await makeRequest<User>("/me", {
+      method: "GET",
+      accessToken: accessToken,
+    });
+  } catch (error) {
+    return await authenticator.logout(request, { redirectTo: "/login" });
+  }
+};

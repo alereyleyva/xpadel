@@ -1,3 +1,9 @@
+import axios from "axios";
+
+export const httpClient = axios.create({
+  baseURL: process.env.API_URL,
+});
+
 interface HttpClientOptions {
   accessToken?: string;
   body?: object;

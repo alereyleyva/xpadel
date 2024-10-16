@@ -11,36 +11,27 @@ import {
 } from "@remix-run/node";
 import {
   Form,
+  Outlet,
   useActionData,
   useLoaderData,
+  useNavigate,
   useNavigation,
 } from "@remix-run/react";
-import { type ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { authenticator } from "~/services/auth.server";
 import {
+  type FormValidationErrors,
   isFailedFormValidationResult,
   parseZodValidationResult,
 } from "~/services/form-validation";
 import { makeRequest } from "~/services/http-client";
-import type { User, UserProfile } from "~/types/definition";
+import { getSessionUser } from "~/services/session.server";
+import type { User } from "~/types/definition";
 import { UserProfileSchema } from "~/types/schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { accessToken } = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
-
-  try {
-    const user = await makeRequest<User>("/me", {
-      method: "GET",
-      accessToken: accessToken,
-    });
-
-    return user.profile;
-  } catch (error) {
-    return await authenticator.logout(request, { redirectTo: "/login" });
-  }
+  return getSessionUser(request);
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -67,36 +58,27 @@ export async function action({ request }: ActionFunctionArgs) {
 
   try {
     return await makeRequest<User>("/me", {
-      method: "PATCH",
+      method: "POST",
       body: validationResult.data,
       accessToken: accessToken,
     });
   } catch (error) {
-    return await authenticator.logout(request, { redirectTo: "/login" });
+    return json({
+      formErrors: ["Error en el servidor, por favor inténtelo de nuevo"],
+    });
   }
 }
 
 export default function Profile() {
-  const userProfile = useLoaderData<UserProfile>();
-  const actionData = useActionData<typeof action>();
+  const user = useLoaderData<User>();
+  const userProfile = user.profile;
+  const actionData = useActionData<User | FormValidationErrors>();
   const navigation = useNavigation();
-  const avatarRef = useRef<HTMLInputElement>(null);
-  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
+  const navigate = useNavigate();
+  const avatarSrc = userProfile.avatar ?? undefined;
 
-  const handleAvatarClick = () => avatarRef.current?.click();
-
-  const handleAvatarChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    if (!event.target.files) return;
-
-    const avatarFile = event.target.files[0];
-
-    if (avatarFile) {
-      const avatarSrc = URL.createObjectURL(avatarFile);
-      setAvatarSrc(avatarSrc);
-    }
-  };
-
-  const isSubmitting = navigation.formAction === "/user-profile";
+  const action = "/user-profile";
+  const isSubmitting = navigation.formAction === action;
 
   const failedForm =
     actionData && ("formErrors" in actionData || "fieldErrors" in actionData);
@@ -118,8 +100,7 @@ export default function Profile() {
 
       <Form
         method="post"
-        action="/user-profile"
-        encType="multipart/form-data"
+        action={action}
         className="flex w-10/12 flex-col items-center space-y-5 sm:w-2/3 md:w-2/5"
       >
         <Avatar
@@ -127,17 +108,8 @@ export default function Profile() {
           fallback={
             <CameraIcon className="h-10 w-10 animate-pulse text-default-500" />
           }
+          onClick={() => navigate("/user-profile/avatar")}
           className="h-32 w-32 cursor-pointer"
-          onClick={handleAvatarClick}
-        />
-
-        <Input
-          type="file"
-          name="avatar"
-          className="hidden"
-          accept="image/*"
-          ref={avatarRef}
-          onChange={handleAvatarChange}
         />
 
         <Input
@@ -192,6 +164,7 @@ export default function Profile() {
         </Tooltip>
       </Form>
       <ToastContainer />
+      <Outlet />
     </div>
   );
 }

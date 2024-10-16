@@ -18,13 +18,11 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import icon from "~/images/xpadel.png";
-import { authenticator } from "~/services/auth.server";
-import type { UserSession } from "~/types/definition";
+import { getSessionUser } from "~/services/session.server";
+import type { User } from "~/types/definition";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  return getSessionUser(request);
 }
 
 const menuItemsOptions = [
@@ -35,7 +33,9 @@ const menuItemsOptions = [
 ];
 
 export default function Home() {
-  const { email } = useLoaderData<UserSession>();
+  const { email, profile } = useLoaderData<User>();
+  const { avatar } = profile;
+  const avatarSrc = avatar ?? undefined;
   const navigate = useNavigate();
   const submit = useSubmit();
 
@@ -65,6 +65,7 @@ export default function Home() {
                 as="button"
                 className="transition-transform"
                 color="default"
+                src={avatarSrc}
                 name={email}
                 size="md"
               />

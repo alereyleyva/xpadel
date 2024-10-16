@@ -4,10 +4,12 @@ export interface UserSession {
 }
 
 export interface User {
+  email: string;
   profile: UserProfile;
 }
 
 export interface UserProfile {
+  avatar: string | null;
   firstName: string | null;
   lastName: string | null;
   fullName: string | null;
