@@ -56,17 +56,21 @@ export async function action({ request }: ActionFunctionArgs) {
     return json(validationResult.errors);
   }
 
-  try {
-    return await makeRequest<User>("/me", {
-      method: "POST",
-      body: validationResult.data,
-      accessToken: accessToken,
-    });
-  } catch (error) {
+  const response = await makeRequest("/me", {
+    method: "POST",
+    body: validationResult.data,
+    accessToken: accessToken,
+  });
+
+  if (!response.ok) {
     return json({
       formErrors: ["Error en el servidor, por favor inténtelo de nuevo"],
     });
   }
+
+  const user: User = await response.json();
+
+  return json(user);
 }
 
 export default function Profile() {

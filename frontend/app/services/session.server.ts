@@ -16,17 +16,19 @@ export const sessionStorage = createCookieSessionStorage({
 
 export const { getSession, commitSession, destroySession } = sessionStorage;
 
-export const getSessionUser = async (request: Request) => {
+export const getSessionUser = async (request: Request): Promise<User> => {
   const { accessToken } = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
 
-  try {
-    return await makeRequest<User>("/me", {
-      method: "GET",
-      accessToken: accessToken,
-    });
-  } catch (error) {
+  const response = await makeRequest("/me", {
+    method: "GET",
+    accessToken: accessToken,
+  });
+
+  if (!response.ok) {
     return await authenticator.logout(request, { redirectTo: "/login" });
   }
+
+  return await response.json();
 };

@@ -33,20 +33,22 @@ authenticator.use(
       throw new FormValidationError(registrationResult.errors);
     }
 
-    const response = await makeRequest<AuthenticationResponse>("/register", {
+    const response = await makeRequest("/register", {
       body: userRegistration,
       method: "POST",
     });
 
-    if (isFailedAuthentication(response)) {
-      const { error } = response;
+    const responseData: AuthenticationResponse = await response.json();
+
+    if (isFailedAuthentication(responseData)) {
+      const { error } = responseData;
 
       throw new FormValidationError({
         formErrors: [error],
       });
     }
 
-    const { accessToken } = response;
+    const { accessToken } = responseData;
 
     return {
       email: userRegistration.email,
@@ -71,20 +73,22 @@ authenticator.use(
       throw new FormValidationError(loginResult.errors);
     }
 
-    const response = await makeRequest<AuthenticationResponse>("/login", {
+    const response = await makeRequest("/login", {
       body: userLogin,
       method: "POST",
     });
 
-    if (isFailedAuthentication(response)) {
-      const { error } = response;
+    const responseData: AuthenticationResponse = await response.json();
+
+    if (isFailedAuthentication(responseData)) {
+      const { error } = responseData;
 
       throw new FormValidationError({
         formErrors: [error],
       });
     }
 
-    const { accessToken } = response;
+    const { accessToken } = responseData;
 
     return {
       email: userLogin.email,

@@ -10,10 +10,10 @@ interface HttpClientOptions {
   method: string;
 }
 
-export async function makeRequest<ResponseType>(
+export async function makeRequest(
   path: string,
   options: HttpClientOptions = { method: "GET" },
-): Promise<ResponseType> {
+): Promise<Response> {
   const headers = getHeaders(options);
 
   let requestOptions: RequestInit = {
@@ -28,9 +28,7 @@ export async function makeRequest<ResponseType>(
     };
   }
 
-  const response = await fetch(`${process.env.API_URL}${path}`, requestOptions);
-
-  return await response.json();
+  return await fetch(`${process.env.API_URL}${path}`, requestOptions);
 }
 
 function getHeaders(options: HttpClientOptions): Headers {
