@@ -20,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Uuid $id;
 
     #[ORM\Column(type: Types::TEXT, unique: true)]
-    private string $email;
+    private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -35,10 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private UserProfile $profile;
 
-    public function __construct(string $email)
+    public function __construct()
     {
         $this->id = Uuid::v4();
-        $this->email = $email;
         $this->createdAt = new \DateTimeImmutable();
 
         $profile = new UserProfile();

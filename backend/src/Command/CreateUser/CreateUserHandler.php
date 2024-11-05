@@ -25,7 +25,8 @@ readonly class CreateUserHandler
             );
         }
 
-        $user = new User($command->email);
+        $user = new User();
+        $user->setEmail($command->email);
 
         if (null !== $command->password) {
             $this->hashUserPassword($user, $command->password);

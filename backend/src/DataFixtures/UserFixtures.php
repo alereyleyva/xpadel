@@ -27,7 +27,8 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         foreach (self::USERS as $userData) {
-            $user = new User($userData['email']);
+            $user = new User();
+            $user->setEmail($userData['email']);
 
             $hashedPassword = $this->passwordHasher->hashPassword($user, $userData['password']);
 

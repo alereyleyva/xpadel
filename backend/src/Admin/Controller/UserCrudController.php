@@ -44,11 +44,6 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
-    public function createEntity(string $entityFqcn): User
-    {
-        return new User('');
-    }
-
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $userRepository = $entityManager->getRepository(User::class);
