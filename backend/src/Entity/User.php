@@ -113,4 +113,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         $this->profile = $profile;
     }
+
+    public function getFullName(): ?string
+    {
+        return $this->profile->getFullName();
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->profile->getPhoneNumber();
+    }
+
+    public function getInstagramAccount(): ?string
+    {
+        $instagramAccount = $this->profile->getInstagramAccount();
+
+        if (null === $instagramAccount) {
+            return null;
+        }
+
+        return sprintf('@%s', $instagramAccount);
+    }
 }
