@@ -29,7 +29,7 @@ class UpdateUserProfileController extends AbstractController
 
         $payload = $request->getPayload()->all();
 
-        $userProfile = $user->getProfile();
+        $userProfile = $user->getUserProfile();
 
         $updatedFirstValue = $this->processFieldUpdateValueFromPayload($payload, 'firstName', $userProfile->getFirstName());
         $userProfile->setFirstName($updatedFirstValue);
@@ -43,7 +43,7 @@ class UpdateUserProfileController extends AbstractController
         $updatedInstagramAccount = $this->processFieldUpdateValueFromPayload($payload, 'instagramAccount', $userProfile->getInstagramAccount());
         $userProfile->setInstagramAccount($updatedInstagramAccount);
 
-        $user->setProfile($userProfile);
+        $user->setUserProfile($userProfile);
 
         $this->userRepository->save($user);
 

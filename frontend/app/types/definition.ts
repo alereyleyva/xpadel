@@ -5,7 +5,7 @@ export interface UserSession {
 
 export interface User {
   email: string;
-  profile: UserProfile;
+  userProfile: UserProfile;
 }
 
 export interface UserProfile {

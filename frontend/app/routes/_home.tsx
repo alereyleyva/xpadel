@@ -33,8 +33,8 @@ const menuItemsOptions = [
 ];
 
 export default function Home() {
-  const { email, profile } = useLoaderData<User>();
-  const { avatar } = profile;
+  const { email, userProfile } = useLoaderData<User>();
+  const { avatar } = userProfile;
   const avatarSrc = avatar ?? undefined;
   const navigate = useNavigate();
   const submit = useSubmit();

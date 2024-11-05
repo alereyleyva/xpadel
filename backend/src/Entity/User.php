@@ -33,16 +33,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public \DateTimeImmutable $createdAt;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private UserProfile $profile;
+    private UserProfile $userProfile;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private PlayerProfile $playerProfile;
 
     public function __construct()
     {
         $this->id = Uuid::v4();
         $this->createdAt = new \DateTimeImmutable();
 
-        $profile = new UserProfile();
+        $userProfile = new UserProfile();
+        $this->setUserProfile($userProfile);
 
-        $this->setProfile($profile);
+        $playerProfile = new PlayerProfile();
+        $this->setPlayerProfile($playerProfile);
     }
 
     public function getId(): string
@@ -100,38 +105,73 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
     }
 
-    public function getProfile(): UserProfile
+    public function getUserProfile(): UserProfile
     {
-        return $this->profile;
+        return $this->userProfile;
     }
 
-    public function setProfile(UserProfile $profile): void
+    public function setUserProfile(UserProfile $userProfile): void
     {
-        if ($profile->getUser() !== $this) {
-            $profile->setUser($this);
+        if ($userProfile->getUser() !== $this) {
+            $userProfile->setUser($this);
         }
 
-        $this->profile = $profile;
+        $this->userProfile = $userProfile;
     }
 
+    public function getPlayerProfile(): PlayerProfile
+    {
+        return $this->playerProfile;
+    }
+
+    public function setPlayerProfile(PlayerProfile $playerProfile): void
+    {
+        if ($playerProfile->getUser() !== $this) {
+            $playerProfile->setUser($this);
+        }
+
+        $this->playerProfile = $playerProfile;
+    }
+
+    #[Ignore]
     public function getFullName(): ?string
     {
-        return $this->profile->getFullName();
+        return $this->userProfile->getFullName();
     }
 
+    #[Ignore]
     public function getPhoneNumber(): ?string
     {
-        return $this->profile->getPhoneNumber();
+        return $this->userProfile->getPhoneNumber();
     }
 
+    #[Ignore]
     public function getInstagramAccount(): ?string
     {
-        $instagramAccount = $this->profile->getInstagramAccount();
+        $instagramAccount = $this->userProfile->getInstagramAccount();
 
         if (null === $instagramAccount) {
             return null;
         }
 
         return sprintf('@%s', $instagramAccount);
+    }
+
+    #[Ignore]
+    public function getPosition(): string
+    {
+        return $this->playerProfile->getPosition()->value;
+    }
+
+    #[Ignore]
+    public function getDominantHand(): string
+    {
+        return $this->playerProfile->getDominantHand()->value;
+    }
+
+    #[Ignore]
+    public function getLevel(): ?float
+    {
+        return $this->playerProfile->getLevel();
     }
 }

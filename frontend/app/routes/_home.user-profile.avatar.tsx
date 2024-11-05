@@ -57,8 +57,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ProfileAvatar() {
-  const user = useLoaderData<User>();
-  const userProfile = user.profile;
+  const { userProfile } = useLoaderData<User>();
   const navigate = useNavigate();
   const navigation = useNavigation();
   const avatarRef = useRef<HTMLInputElement>(null);

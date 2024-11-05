@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Controller;
+namespace App\Admin\Controller\User;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -49,7 +50,16 @@ class UserCrudController extends AbstractCrudController
             TextField::new('fullName')->hideOnForm(),
             EmailField::new('email'),
             TelephoneField::new('phoneNumber')->hideOnForm(),
-            TextField::new('instagramAccount')->hideOnForm(),
+            TextField::new('instagramAccount')
+                ->hideOnForm()
+                ->hideOnIndex(),
+            TextField::new('position')
+                ->hideOnForm()
+                ->hideOnIndex(),
+            TextField::new('dominantHand')
+                ->hideOnForm()
+                ->hideOnIndex(),
+            NumberField::new('level')->hideOnForm(),
             TextField::new('password')
                 ->setFormType(PasswordType::class)
                 ->onlyWhenCreating(),
@@ -57,9 +67,12 @@ class UserCrudController extends AbstractCrudController
                 ->hideOnIndex()
                 ->setSortable(false),
             DateTimeField::new('createdAt')->hideOnForm(),
-            AssociationField::new('profile')
+            AssociationField::new('userProfile')
                 ->onlyOnForms()
                 ->renderAsEmbeddedForm(),
+            AssociationField::new('playerProfile')
+                ->onlyOnForms()
+                ->renderAsEmbeddedForm()
         ];
     }
 

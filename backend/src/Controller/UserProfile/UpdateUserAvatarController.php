@@ -32,7 +32,7 @@ class UpdateUserAvatarController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $userProfile = $user->getProfile();
+        $userProfile = $user->getUserProfile();
 
         $avatar = $request->files->get('avatar');
 
@@ -41,7 +41,7 @@ class UpdateUserAvatarController extends AbstractController
 
             $userProfile->setAvatar($avatarSrc);
 
-            $user->setProfile($userProfile);
+            $user->setUserProfile($userProfile);
 
             $this->userRepository->save($user);
         }

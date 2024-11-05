@@ -24,10 +24,10 @@ class GetUserController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $userProfile = $user->getProfile();
+        $userProfile = $user->getUserProfile();
 
         $processedAvatar = $this->generateTemporaryAvatar($userProfile);
-        $user->getProfile()->setAvatar($processedAvatar);
+        $user->getUserProfile()->setAvatar($processedAvatar);
 
         return $this->json($user);
     }

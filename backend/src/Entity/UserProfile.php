@@ -30,13 +30,13 @@ class UserProfile
     #[ORM\Column(type: Types::TEXT, unique: true, nullable: true)]
     private ?string $phoneNumber = null;
 
-    #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $instagramAccount = null;
+
+    #[ORM\OneToOne(inversedBy: 'userProfile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Ignore]
     private ?User $user = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $instagramAccount = null;
 
     public function __construct()
     {

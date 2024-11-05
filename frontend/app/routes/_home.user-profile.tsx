@@ -70,8 +70,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Profile() {
-  const user = useLoaderData<User>();
-  const userProfile = user.profile;
+  const { userProfile } = useLoaderData<User>();
   const actionData = useActionData<User | FormValidationErrors>();
   const navigation = useNavigation();
   const navigate = useNavigate();

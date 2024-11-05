@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Controller;
+namespace App\Admin\Controller\User;
 
 use App\Entity\UserProfile;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
